@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.dyw.springcloud.dao.DeptDao">
+
+    <resultMap type="com.dyw.springcloud.entity.Dept" id="DeptMap">
+        <result property="deptno" column="deptno" jdbcType="INTEGER"/>
+        <result property="dname" column="dname" jdbcType="VARCHAR"/>
+        <result property="db_souce" column="db_souce" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="DeptMap">
+        select
+          deptno, dname, db_souce
+        from dyw.dept
+        where deptno = #{deptno}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="DeptMap">
+        select
+          deptno, dname, db_souce
+        from dyw.dept
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="DeptMap">
+        select
+          deptno, dname, db_souce
+        from dyw.dept
+        <where>
+            <if test="deptno != null">
+                and deptno = #{deptno}
+            </if>
+            <if test="dname != null and dname != ''">
+                and dname = #{dname}
+            </if>
+            <if test="db_souce != null and db_souce != ''">
+                and db_souce = #{db_souce}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="deptno" useGeneratedKeys="true">
+        insert into dyw.dept(dname, db_souce)
+        values (#{dname}, DATABASE())
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update dyw.dept
+        <set>
+            <if test="dname != null and dname != ''">
+                dname = #{dname},
+            </if>
+            <if test="db_souce != null and db_souce != ''">
+                db_souce = #{db_souce},
+            </if>
+        </set>
+        where deptno = #{deptno}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from dyw.dept where deptno = #{deptno}
+    </delete>
+
+</mapper>
